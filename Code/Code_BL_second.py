@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
-"""This code is for analyzing fish swimming in body lenght/second.
+"""This code is for analyzing fish swimming in body length/second.
+"" We suggest run this code in Google Colab
 """
 #Install the Ultralytics package
 !pip install ultralytics
