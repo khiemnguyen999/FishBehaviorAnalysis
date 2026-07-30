@@ -1,13 +1,22 @@
 # -*- coding: utf-8 -*-
 """This code is designed to run in Google Colab.
 """
+# =============================
+#  INSTALL DEPENDENCIES
+# =============================
 #Install the Ultralytics package
 !pip install ultralytics
+
+# Install DeepSort
+!pip install opencv-python-headless deep_sort_realtime
 
 # Place the detection model, named "model.zip" in your folder in Google drive
 # Note: model.zip is the pre-trained model used for fish detection. 
 #Therefore, it is directly used to detect fish in the input videos for subsequent behavioral analysis.
 
+# =============================
+#  MOUNT GOOGLE DRIVE
+# =============================
 # Access Google Drive
 from google.colab import drive
 drive.mount('/content/drive')
@@ -16,11 +25,8 @@ drive.mount('/content/drive')
 !rm -rf /content/dataset
 !unzip -q /content/drive/MyDrive/<folder>/model.zip -d /content/dataset
 
-# Install DeepSort
-!pip install opencv-python-headless deep_sort_realtime
-
 # =============================
-#  ANALYZE FISH MOVEMENT
+#  LOAD YOLO DETECTION MODEL
 # =============================
 
 import cv2
@@ -30,15 +36,15 @@ from ultralytics import YOLO
 from deep_sort_realtime.deepsort_tracker import DeepSort
 from google.colab.patches import cv2_imshow
 
-
 # Initial configuaration
-
 model = YOLO('/content/dataset/content/Deepfish_train/yolo2/weights/best.pt')  #  Call the model after unzip
 tracker = DeepSort(
     max_age=30,
     n_init=10
 )
-
+# =============================
+#  DEFINE THRESHOLD
+# =============================
 # Confidence threshold for filtering low-confidence bounding boxes.
 CONF_THRESH = 0.3
 
@@ -50,6 +56,9 @@ FAST_SPEED = 90.0   #pixel/s
 STILL_SPEED = 8     #pixel/s
 TURN_ANGLE = 45     #degree
 
+# =============================
+#  DEFINE FUNCTIONS
+# =============================
 #Function for calculating velocity and direction.
 def calculate_velocity_and_angle(pos_list, fps):
     if len(pos_list) < 2:
@@ -73,7 +82,7 @@ def classify_state(v, d_angle):
     else:
         return "Medium"
 
-# Apply CLAHE
+# define  CLAHE
 def apply_clahe(frame):
     lab = cv2.cvtColor(frame, cv2.COLOR_BGR2LAB)
     l, a, b = cv2.split(lab)
@@ -98,12 +107,13 @@ frame_count = 0
 print("Start to process video...")
 
 
-# Apply CLAHE to enhance image
+# Test CLAHE in an available image
 
 import cv2
 import matplotlib.pyplot as plt
 
-img = cv2.imread('/content/drive/MyDrive/<Name of Folder>/<Name of Video>.jpeg')
+# Give a path of an image
+img = cv2.imread('/content/drive/MyDrive/<Name of Folder>/<Name of image>.jpeg')
 
 print(img.shape)
 enhanced_img = apply_clahe(img)
@@ -117,7 +127,7 @@ cv2.imwrite('image_clahe.jpg', enhanced_img)
 
 
 # =======================================================================================
-#  PROCESSING VIDEO TO VISUALIZE FISH SWIMMING and OUTPUT CSV File
+#  FISH DETECTION AND TRACKING
 # =======================================================================================
 
 import pandas as pd
@@ -201,15 +211,9 @@ out.release()
 
 print(" Video is saved !")
 
-
-
-
-
 # =============================
-#  DRAW A DIRECTION OF SWIMMING
+#  SWIMMING DIRECTION ANALYSIS
 # =============================
-
-
 
 result_v_a_s =[]
 FPS = fps                 # fps video
@@ -353,10 +357,9 @@ out.release()
 
 print("Done.")
 
-
-# =======================================================================================
-#  Plot a rose diagram to visualize the frequency distribution of turning angles
-# =======================================================================================
+# =============================
+#  ROSE DIAGRAM
+# =============================
 
 import pandas as pd
 import numpy as np
@@ -407,9 +410,9 @@ ax.set_title("Root zones", fontsize=12, pad=50)
 plt.show()
 
 
-# =======================================================================================
-#  Generate the behavioral signature file.
-# =======================================================================================
+# =============================
+#  BEHAVIORAL SIGNATURE
+# =============================
 
 import pandas as pd
 import numpy as np
@@ -457,9 +460,9 @@ print(signature)
 signature.to_csv("behavioral_signature.csv", index=False)
 
 
-# =======================================================================================
-#  CREATE MARKOV GRAPH
-# =======================================================================================
+# =============================
+#  MARKOV TRANSITION GRAPH
+# =============================
 
 
 import pandas as pd
