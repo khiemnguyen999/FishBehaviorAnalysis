@@ -1,1 +1,1 @@
-This folder contains the pre-trained fish detection model. Please download part1 and part2. Then, combine them together before unzipping.
+This folder contains the pre-trained fish detection model. Please download both part1 and part2 and combine them to create model.zip. Upload model.zip to your Google Drive before running the code. The code will automatically extract the model during execution.
