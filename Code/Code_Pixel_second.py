@@ -14,7 +14,7 @@ drive.mount('/content/drive')
 
 # Unzip detection model
 !rm -rf /content/dataset
-!unzip -q /content/drive/MyDrive/New/model.zip -d /content/dataset
+!unzip -q /content/drive/MyDrive/<folder>/model.zip -d /content/dataset
 
 # Install DeepSort
 !pip install opencv-python-headless deep_sort_realtime
