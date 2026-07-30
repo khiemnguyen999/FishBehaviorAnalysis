@@ -88,9 +88,10 @@ def apply_clahe(frame):
     enhanced = cv2.cvtColor(limg, cv2.COLOR_LAB2BGR)
     return enhanced
 
-# =============================
+# =======================================================================================
 #  Create Video
-# =============================
+# =======================================================================================
+# Give an available video first
 video_path = "/content/drive/MyDrive/<Name of Folder>/<Name of Video>.mp4"
 
 cap = cv2.VideoCapture(video_path)
