@@ -2,21 +2,22 @@
 """This code is for analyzing fish swimming in body length/second.
 "" We suggest run this code in Google Colab
 """
-#Install the Ultralytics package
+#Install dependencies
 !pip install ultralytics
+!pip install opencv-python-headless deep_sort_realtime
+
+#Mount Google Drive
+from google.colab import drive
+drive.mount('/content/drive')
 
 #Place the detection model, named "model.zip" in your folder in Google drive
 # Note: model.zip is the pre-trained model used for fish detection. 
 #Therefore, it is directly used to detect fish in the input videos for subsequent behavioral analysis.
 
-from google.colab import drive
-drive.mount('/content/drive')
-
 !rm -rf /content/dataset
 !unzip -q /content/drive/MyDrive/New/model.zip -d /content/dataset
 
-!pip install opencv-python-headless deep_sort_realtime
-
+# LOAD YOLO DETECTION MODEL AND ANALYZE VIDEO
 import cv2
 import math
 import numpy as np
@@ -24,9 +25,9 @@ from ultralytics import YOLO
 from deep_sort_realtime.deepsort_tracker import DeepSort
 from google.colab.patches import cv2_imshow
 
-# =============================
-#  1. Config
-# =============================
+# ==========================================================
+#  1. Config YOLO model and define threshold
+# ==========================================================
 model = YOLO('/content/dataset/content/Deepfish_train/yolo2/weights/best.pt')  # Call the model after unzip
 tracker = DeepSort(
     max_age=30,
@@ -44,9 +45,9 @@ SLOW_SPEED  = 0.13   # can be modified for suitable value
 FAST_SPEED  = 0.25   # can be modified for suitable value
 TURN_ANGLE  = 45     # degree
 
-# =============================
+# ==========================================================
 #  2. Calculate the velocity and direction by Body lenght
-# =============================
+# ==========================================================
 def calculate_velocity_and_angle(pos_list, fps):
     if len(pos_list) < 2:
         return 0, 0
@@ -76,9 +77,9 @@ def classify_state(v, d_angle):
     else:
         return "Fast"
 
-# =============================
+# ==========================================================
 #  3. Apply CLAHE
-# =============================
+# ==========================================================
 def apply_clahe(frame):
     lab = cv2.cvtColor(frame, cv2.COLOR_BGR2LAB)
     l, a, b = cv2.split(lab)
@@ -88,9 +89,9 @@ def apply_clahe(frame):
     enhanced = cv2.cvtColor(limg, cv2.COLOR_LAB2BGR)
     return enhanced
 
-# =======================================================================================
-#  Create Video
-# =======================================================================================
+# ==========================================================
+#  Provide videos and generate resulted video
+# ==========================================================
 # Give an available video first
 video_path = "/content/drive/MyDrive/<Name of Folder>/<Name of Video>.mp4"
 
@@ -105,6 +106,9 @@ out = cv2.VideoWriter('/content/<Name of Video>_output.mp4', fourcc, fps,
 frame_count = 0
 print("Start to process video...")
 
+# ==========================================================
+#  Fish detection and Tracking
+# ==========================================================
 import pandas as pd
 result_v_a =[]
 
