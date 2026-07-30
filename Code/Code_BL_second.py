@@ -90,7 +90,7 @@ def apply_clahe(frame):
     return enhanced
 
 # ==========================================================
-#  Provide videos and generate resulted video
+#  4. Provide videos and generate resulted video
 # ==========================================================
 # Give an available video first
 video_path = "/content/drive/MyDrive/<Name of Folder>/<Name of Video>.mp4"
@@ -107,7 +107,7 @@ frame_count = 0
 print("Start to process video...")
 
 # ==========================================================
-#  Fish detection and Tracking
+#  5. Fish detection and Tracking
 # ==========================================================
 import pandas as pd
 result_v_a =[]
@@ -165,7 +165,7 @@ while True:
 
         result_v_a_s.append([track_id, velocity, angle, state])
 
-        # Màu ngẫu nhiên theo ID (fix lỗi TypeError)
+        # Random color for each ID (fix TypeError)
         try:
             np.random.seed(int(track_id))
         except:
