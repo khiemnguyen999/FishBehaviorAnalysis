@@ -185,22 +185,16 @@ while True:
                     color,
                     2
                 )
-
-            
             if len(fish_positions[track_id]) > 100:
                 fish_positions[track_id] = fish_positions[track_id][-100:]
     if frame_count % 50 == 0:
         cv2_imshow(frame)
-
     out.write(frame)
-
 cap.release()
 out.release()
-
 # Save CSV
 df = pd.DataFrame(
     result_v_a_s,
     columns=["track_id", "velocity", "angle", "state"]
 )
-
 df.to_csv("Velocity_Angle_State.csv", index=False)
